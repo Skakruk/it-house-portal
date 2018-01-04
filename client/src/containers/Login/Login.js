@@ -1,21 +1,39 @@
 import React from 'react';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import './Login.less';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 const FormItem = Form.Item;
 
 class LoginContainer extends React.Component {
+    state = {
+        redirectToReferrer: false
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+
+                this.setState({ redirectToReferrer: true });
+                this.props.dispatch({type: 'LOGIN_SUCCESS'});
             }
         });
     };
 
     render() {
+        const { from } = this.props.location.state || { from: { pathname: '/' } };
+        const { redirectToReferrer } = this.state;
+
         const { getFieldDecorator } = this.props.form;
+
+        if (redirectToReferrer) {
+            return (
+                <Redirect to={from}/>
+            )
+        }
 
         return (
             <div className="container">
@@ -54,4 +72,4 @@ class LoginContainer extends React.Component {
     }
 }
 
-export default Form.create()(LoginContainer);
+export default connect()(Form.create()(LoginContainer));

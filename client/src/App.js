@@ -9,7 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 class App extends Component {
     render() {
         const { user } = this.props;
-        console.log(user);
+
         return (
             <div className="App">
                 <Route path="/login" component={LoginContainer} />
