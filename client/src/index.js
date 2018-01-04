@@ -4,6 +4,8 @@ import createHistory from 'history/createBrowserHistory';
 import { stringify, parse } from 'qs';
 import qhistory from 'qhistory';
 import { Router } from 'react-router';
+import { Provider } from 'react-redux';
+import store from './store';
 
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
@@ -17,9 +19,11 @@ const history = qhistory(
 );
 
 ReactDOM.render(
-    <Router history={history}>
-        <App />
-    </Router>,
+    <Provider store={store}>
+        <Router history={history}>
+            <App />
+        </Router>
+    </Provider>,
     document.getElementById('root')
 );
 

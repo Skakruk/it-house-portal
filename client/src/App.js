@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router'
+import { Switch, Route, withRouter} from 'react-router-dom'
+import { connect } from 'react-redux';
 
 import LoginContainer from './containers/Login';
+import DashboardContainer from './containers/Dashboard';
+import PrivateRoute from './components/PrivateRoute';
 
 class App extends Component {
     render() {
+        const { user } = this.props;
+        console.log(user);
         return (
             <div className="App">
-                <Switch>
-                    <Route path="/login" component={LoginContainer}/>
-                </Switch>
+                <Route path="/login" component={LoginContainer} />
+                <PrivateRoute exact path="/" currentUser={user} component={DashboardContainer} />
             </div>
         );
     }
 }
-export default App;
+
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default withRouter(connect(mapStateToProps)(App));
