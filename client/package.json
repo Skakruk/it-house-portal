@@ -1,0 +1,37 @@
+{
+  "name": "it-house-portal-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-app-rewired eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Skakruk/it-house-portal.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Skakruk/it-house-portal/issues"
+  },
+  "homepage": "https://github.com/Skakruk/it-house-portal#readme",
+  "dependencies": {
+    "antd": "^3.1.0",
+    "history": "^4.7.2",
+    "qhistory": "^1.0.0",
+    "qs": "^6.5.1",
+    "react": "^16.2.0",
+    "react-app-rewire-less": "^2.1.0",
+    "react-dom": "^16.2.0",
+    "react-scripts": "1.0.17"
+  },
+  "devDependencies": {
+    "babel-plugin-import": "^1.6.3",
+    "react-app-rewired": "^1.4.0"
+  }
+}
