@@ -1,24 +1,51 @@
 import React from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
-import './Login.less';
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
+import api from '../../helpers/api';
+
+import './Login.less';
 
 const FormItem = Form.Item;
 
 class LoginContainer extends React.Component {
     state = {
-        redirectToReferrer: false
+        redirectToReferrer: false,
+        loading: false,
+    };
+
+    componentWillMount() {
+        if (this.props.user.loggedIn) {
+            this.setState({ redirectToReferrer: true });
+        }
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
+
+        this.setState({
+            loading: true,
+        });
+
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                api.post('/auth/password', values).then((response) => {
+                    localStorage.setItem('accessToken', response.accessToken);
+                    this.props.dispatch({ type: 'LOGIN_SUCCESS' });
+                    this.setState({ redirectToReferrer: true });
+                    message.success('Welcome back!');
+                }).catch((err) => {
+                    if (err.status === 401) {
+                        message.error('Invalid credentials.');
+                    } else {
+                        message.error('Something went wrong.');
+                    }
 
-                this.setState({ redirectToReferrer: true });
-                this.props.dispatch({type: 'LOGIN_SUCCESS'});
+                }).then(() => {
+                    this.setState({
+                        loading: false,
+                    });
+                })
             }
         });
     };
@@ -31,7 +58,7 @@ class LoginContainer extends React.Component {
 
         if (redirectToReferrer) {
             return (
-                <Redirect to={from}/>
+                <Redirect to={from} />
             )
         }
 
@@ -39,7 +66,7 @@ class LoginContainer extends React.Component {
             <div className="container">
                 <Form onSubmit={this.handleSubmit} className="login-form">
                     <FormItem>
-                        {getFieldDecorator('userName', {
+                        {getFieldDecorator('username', {
                             rules: [{ required: true, message: 'Please input your username!' }],
                         })(
                             <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -62,7 +89,8 @@ class LoginContainer extends React.Component {
                             <Checkbox>Remember me</Checkbox>
                         )}
                         <a className="login-form-forgot" href="">Forgot password</a>
-                        <Button type="primary" htmlType="submit" className="login-form-button">
+                        <Button type="primary" htmlType="submit" className="login-form-button"
+                                loading={this.state.loading}>
                             Log in
                         </Button>
                     </FormItem>
@@ -72,4 +100,8 @@ class LoginContainer extends React.Component {
     }
 }
 
-export default connect()(Form.create()(LoginContainer));
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default withRouter(connect(mapStateToProps)(Form.create()(LoginContainer)));
